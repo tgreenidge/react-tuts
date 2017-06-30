@@ -1,3 +1,6 @@
 
 node_modules
 dist
+app/utils/keys.js
+.firebaserc
+firebase.json

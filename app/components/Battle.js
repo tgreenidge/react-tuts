@@ -1,35 +1,8 @@
 var React = require('react');
 var PropTypes = require('prop-types');
 var Link = require('react-router-dom').Link;
+var PlayerPreview = require('./PlayerPreview');
 
-function PlayerPreview (props) {
-	return (
-		<div>
-			<div className='column'>
-				<img
-					className='avatar'
-					src={props.avatar}
-					alt={'Avatar for ' + props.username} 
-				/>
-
-				<h2 className='username'>@{props.username}</h2>
-				
-				<button
-					className='reset'
-					onClick={props.onReset.bind(null, props.id)}>
-						Reset
-				</button>
-			</div>
-		</div>
-	)
-}
-
-PlayerPreview.propTypes = {
-	avatar: PropTypes.string.isRequired,
-	username: PropTypes.string.isRequired,
-	id: PropTypes.string.isRequired,
-	onReset: PropTypes.func.isRequired
-}
 
 class PlayerInput extends React.Component {
 	constructor(props) {
@@ -56,15 +29,14 @@ class PlayerInput extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault();
 
-
 		this.props.onSubmit(
 			this.props.id,
-			this.props.username
+			this.state.username
 		);
 	}
 
 	render() {
-		return(
+		return (
 			<form className='column' onSubmit={this.handleSubmit}>
 				<label className='header' htmlFor='username'>{this.props.label}</label>
 				
@@ -72,8 +44,8 @@ class PlayerInput extends React.Component {
 					id='username'
 					placeholder='github username'
 					type='text'
-					autoComplete='off'
 					value={this.state.username}
+					autoComplete='off'
 					onChange={this.handleChange}
 				/>
 
@@ -81,7 +53,7 @@ class PlayerInput extends React.Component {
 					className='button'
 					type='submit'
 					disabled={!this.state.username} >
-					Submit
+						Submit
 				</button>
 			</form>
 		)
@@ -134,7 +106,7 @@ class Battle extends React.Component {
 	}
 
 	render() {
-		var match = this.props.match;
+		var match = this.props.match; 
 		var playerOneName = this.state.playerOneName;
 		var playerTwoName = this.state.playerTwoName;
 		var playerOneImage = this.state.playerOneImage;
@@ -155,9 +127,15 @@ class Battle extends React.Component {
 						<PlayerPreview
 							avatar={playerOneImage}
 							username={playerOneName}
-							onReset={this.handleReset}
-							id='playerOne'
-						/>}
+						>
+
+							<button
+							className='reset'
+							onClick={this.handleReset.bind(null, 'playerOne')}>
+								Reset
+							</button>
+						</PlayerPreview>
+					}
 
 					{!playerTwoName && 
 						<PlayerInput
@@ -170,21 +148,27 @@ class Battle extends React.Component {
 							<PlayerPreview
 								avatar={playerTwoImage}
 								username={playerTwoName}
-								onReset={this.handleReset}
-								id='playerTwo'
-							/>}
+							>
+								<button
+									className='reset'
+									onClick={this.handleReset.bind(null, 'playerTwo')}>
+										Reset
+								</button>
 
-						{playerOneImage && playerTwoImage &&
-							<Link
-								className='button'
-								to={{
-									pathname: match.url + '/results',
-									search: `?playerOneName=` + playerOneName + '&playerTwoName' + playerTwoName
-								}}>
-									Battle
-							</Link>
+							</PlayerPreview>
 						}
-				</div>
+					</div>
+
+					{playerOneImage && playerTwoImage &&
+						<Link
+							className='button'
+							to={{
+								pathname: match.url + '/results', 
+								search: '?playerOneName=' + playerOneName + '&playerTwoName=' + playerTwoName
+							}}>
+								Battle
+						</Link>
+					}
 			</div>
 		)
 	}
